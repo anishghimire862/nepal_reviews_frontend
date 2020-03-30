@@ -1,0 +1,10 @@
+.body-bg {
+  background-color: red;
+}
+.pointer {
+  cursor: pointer;
+}
+
+.v-text-field label {
+  font-size: 0.8em;
+}

@@ -21,6 +21,7 @@
         >
           <v-icon
             dark
+            @click="$emit('updateThread')"
           >
             mdi-pencil
           </v-icon>

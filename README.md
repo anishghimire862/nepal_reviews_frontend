@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # nepal-reviews-frontend
 
 > My splendiferous Nuxt.js project
@@ -20,3 +21,7 @@ $ yarn generate
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+=======
+# nepal_reviews_frontend
+
+>>>>>>> 808b89184a73e9f4fa7e560f8a2e062ab0205366

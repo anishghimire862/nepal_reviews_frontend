@@ -21,7 +21,7 @@
         >
           <v-icon
             dark
-            @click="$emit('updateThread')"
+            @click="$emit('updateThread', threadId)"
           >
             mdi-pencil
           </v-icon>
@@ -108,7 +108,7 @@ export default {
   props: {
     threadId: {
       type: Number,
-      default: 0
+      default: null
     },
     title: {
       type: String,

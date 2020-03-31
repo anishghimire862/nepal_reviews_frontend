@@ -55,7 +55,9 @@
                 color="indigo"
                 @click="submitThread"
               >
-                Create Thread
+                <span>
+                  {{ threadId === null ? 'Create Thread' : 'Update Thread' }}
+                </span>
               </v-btn>
             </div>
           </v-form>
@@ -74,6 +76,14 @@ export default {
     formTitle: {
       type: String,
       default: ''
+    },
+    updateThread: {
+      type: Boolean,
+      default: false
+    },
+    threadId: {
+      type: Number,
+      default: null
     }
   },
   data () {
@@ -82,6 +92,25 @@ export default {
       title: '',
       description: '',
       category: null
+    }
+  },
+  watch: {
+    threadId (val) {
+      if (val !== null) {
+        this.getThread()
+      }
+    },
+    updateThread (val) {
+      if (val === true) {
+        this.getThread()
+      }
+    },
+    formTitle (val) {
+      if (val === 'Create a Thread') {
+        this.title = ''
+        this.description = ''
+        this.category = null
+      }
     }
   },
   methods: {
@@ -95,14 +124,41 @@ export default {
         category: this.category
       }
 
-      this.$axios.post(url, data)
+      if (this.threadId === null) {
+        this.$axios.post(url, data)
+          .then(function (response) {
+            self.$emit('emitClose')
+            self.$emit('refreshThreads')
+            alert('Thread created.')
+          })
+          .catch(function (error) {
+            alert(error)
+          })
+      } else {
+        const patchUrl = `/threads/${this.threadId}`
+        this.$axios.patch(patchUrl, data)
+          .then(function (response) {
+            self.title = ''
+            self.description = ''
+            self.category = null
+            self.$emit('emitClose')
+            self.$emit('refreshThread')
+            alert('Thread updated.')
+          })
+          .catch(function (error) {
+            alert(error)
+          })
+      }
+    },
+    getThread () {
+      const id = parseInt(this.threadId)
+      const url = `/threads/${id}`
+      const self = this
+      this.$axios.get(url)
         .then(function (response) {
-          self.$emit('emitClose')
-          self.$emit('refreshThreads')
-          alert('Thread created.')
-        })
-        .catch(function (error) {
-          alert(error)
+          self.title = response.data.title
+          self.description = response.data.description
+          self.category = response.data.category
         })
     }
   }

@@ -53,10 +53,10 @@
     </div>
     <create-thread
       :create-thread-sheet="createThreadSheet"
-      :form-title="'Create a Thread'"
-      :update-details="updateDetails"
+      :form-title="threadId === null ? 'Create a Thread' : 'Update Thread'"
+      :thread-id="threadId"
       @emitClose="closeBottomSheet()"
-      @refreshThreads="getThreads()"
+      @refreshThread="getThreads()"
     />
   </div>
 </template>
@@ -77,7 +77,8 @@ export default {
     return {
       threads: [],
       createThreadSheet: false,
-      loading: true
+      loading: true,
+      threadId: null
     }
   },
   created () {
@@ -97,8 +98,13 @@ export default {
           self.loading = false
         })
     },
+    updateThread (threadId) {
+      this.threadId = threadId
+      this.createThreadSheet = true
+    },
     closeBottomSheet () {
       this.createThreadSheet = !this.createThreadSheet
+      this.threadId = null
     }
   }
 }

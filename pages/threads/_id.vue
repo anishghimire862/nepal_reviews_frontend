@@ -26,6 +26,7 @@
           :creator="thread.creator"
           :created-on="new Date(thread.createdAt)"
           :list-view="false"
+          @updateThread="updateThread"
         >
           <template
             v-slot:threadReviews
@@ -45,11 +46,20 @@
         </Thread>
       </v-col>
     </v-row>
+    <create-thread
+      :create-thread-sheet="createThreadSheet"
+      :form-title="'Update Thread'"
+      :thread-id="threadId"
+      :update-thread="updateThreadInFullPage"
+      @emitClose="closeBottomSheet()"
+      @refreshThread="getThread()"
+    />
   </div>
 </template>
 
 <script>
 import Thread from '~/components/Thread.vue'
+import CreateThread from '~/components/CreateThread.vue'
 import UserReviews from '~/components/UserReviews'
 import ReviewForm from '~/components/ReviewForm'
 import userMixin from '~/mixins/userMixin'
@@ -58,6 +68,7 @@ export default {
   auth: false,
   components: {
     Thread,
+    CreateThread,
     UserReviews,
     ReviewForm
   },
@@ -66,8 +77,10 @@ export default {
     return {
       threadId: null,
       thread: {},
+      createThreadSheet: false,
       reviews: [],
-      loading: true
+      loading: true,
+      updateThreadInFullPage: false
     }
   },
   mounted () {
@@ -94,6 +107,14 @@ export default {
           self.reviews = response.data
           self.loading = false
         })
+    },
+    updateThread (threadId) {
+      this.updateThreadInFullPage = true
+      this.createThreadSheet = true
+    },
+    closeBottomSheet () {
+      this.createThreadSheet = !this.createThreadSheet
+      this.updateThreadInFullPage = false
     }
   }
 }

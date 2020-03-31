@@ -18,7 +18,16 @@
         color="indigo"
         @click="submit"
       >
-        Submit Review
+        <span
+          v-if="isUpdate"
+        >
+          Update Review
+        </span>
+        <span
+          v-else
+        >
+          Submit Review
+        </span>
       </v-btn>
     </div>
   </v-card>
@@ -33,11 +42,23 @@ export default {
     threadId: {
       type: Number,
       default: null
+    },
+    isUpdate: {
+      type: Boolean,
+      default: false
+    },
+    reviewId: {
+      type: Number,
+      default: 0
+    },
+    reviewDescription: {
+      type: String,
+      default: ''
     }
   },
   data () {
     return {
-      description: ''
+      description: this.reviewDescription ? this.reviewDescription : ''
     }
   },
   methods: {
@@ -51,15 +72,27 @@ export default {
         threadId
       }
 
-      this.$axios.post(url, data)
-        .then(function (response) {
-          self.description = ''
-          self.$emit('refreshReviews')
-          alert('Review created.')
-        })
-        .catch(function (error) {
-          alert(error)
-        })
+      if (this.isUpdate) {
+        const patchUrl = `/reviews/${this.reviewId}`
+        this.$axios.patch(patchUrl, data)
+          .then(function (response) {
+            self.$emit('refreshReviews')
+            alert('Review Updated')
+          })
+          .catch(function (error) {
+            alert(error)
+          })
+      } else {
+        this.$axios.post(url, data)
+          .then(function (response) {
+            self.description = ''
+            self.$emit('refreshReviews')
+            alert('Review created.')
+          })
+          .catch(function (error) {
+            alert(error)
+          })
+      }
     }
   }
 }

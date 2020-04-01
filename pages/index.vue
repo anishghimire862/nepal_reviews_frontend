@@ -30,6 +30,15 @@
       >
         Create Thread
       </v-btn>
+      <v-alert
+        v-else
+        dense
+        text
+        type="info"
+        class="ml-2 mr-3 mt-5"
+      >
+        Please login in order to create threads and give reviews.
+      </v-alert>
       <v-row dense>
         <v-col
           v-for="thread in threads"
@@ -47,6 +56,7 @@
             :created-on="new Date(thread.createdAt)"
             @emitRedirectToThread="redirectToThread(thread.id)"
             @updateThread="updateThread"
+            @deleteThread="deleteThread"
           />
         </v-col>
       </v-row>
@@ -105,6 +115,18 @@ export default {
     closeBottomSheet () {
       this.createThreadSheet = !this.createThreadSheet
       this.threadId = null
+    },
+    deleteThread (threadId) {
+      const url = `/threads/${threadId}`
+      const self = this
+      this.$axios.delete(url)
+        .then(function (response) {
+          alert('Thread Deleted')
+          self.getThreads()
+        })
+        .catch(function (error) {
+          alert(error)
+        })
     }
   }
 }

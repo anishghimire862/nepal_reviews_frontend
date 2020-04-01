@@ -27,6 +27,7 @@
           :created-on="new Date(thread.createdAt)"
           :list-view="false"
           @updateThread="updateThread"
+          @deleteThread="deleteThread"
         >
           <template
             v-slot:threadReviews
@@ -41,8 +42,8 @@
             />
             <user-reviews
               :reviews="reviews"
-              :show-update-review-form="showUserReviewForm"
               @retriveReviewsAfterPatchFromParent="getReviews()"
+              @deleteReview="deleteReview"
             />
           </template>
         </Thread>
@@ -117,6 +118,30 @@ export default {
     closeBottomSheet () {
       this.createThreadSheet = !this.createThreadSheet
       this.updateThreadInFullPage = false
+    },
+    deleteThread () {
+      const url = `/threads/${this.threadId}`
+      const self = this
+      this.$axios.delete(url)
+        .then(function (response) {
+          alert('Thread Deleted')
+          self.$router.push('/')
+        })
+        .catch(function (error) {
+          alert(error)
+        })
+    },
+    deleteReview (reviewId) {
+      const url = `/reviews/${reviewId}`
+      const self = this
+      this.$axios.delete(url)
+        .then(function (response) {
+          alert('Review Deleted')
+          self.getReviews()
+        })
+        .catch(function (error) {
+          alert(error)
+        })
     }
   }
 }

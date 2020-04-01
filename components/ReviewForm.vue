@@ -76,7 +76,8 @@ export default {
         const patchUrl = `/reviews/${this.reviewId}`
         this.$axios.patch(patchUrl, data)
           .then(function (response) {
-            self.$emit('refreshReviews')
+            self.$emit('retriveReviewsAfterPatch')
+            self.$emit('hideUpdateFormAfterPatch')
             alert('Review Updated')
           })
           .catch(function (error) {

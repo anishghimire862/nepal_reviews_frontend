@@ -128,7 +128,7 @@ export default {
         this.$axios.post(url, data)
           .then(function (response) {
             self.$emit('emitClose')
-            self.$emit('refreshThreads')
+            self.$emit('refreshThread')
             alert('Thread created.')
           })
           .catch(function (error) {

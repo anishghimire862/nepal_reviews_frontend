@@ -28,6 +28,8 @@
             :review-id="reviewId"
             :review-description="reviewDescription"
             :is-update="true"
+            @retriveReviewsAfterPatch="$emit('retriveReviewsAfterPatchFromParent')"
+            @hideUpdateFormAfterPatch="showUpdateReviewForm = false"
           />
         </div>
         <v-card
@@ -103,8 +105,8 @@ export default {
     return {
       reviewId: 0,
       reviewDescription: '',
-      showUpdateReviewForm: false,
-      showUpdateReviewFormId: null
+      showUpdateReviewFormId: null,
+      showUpdateReviewForm: false
     }
   },
   methods: {

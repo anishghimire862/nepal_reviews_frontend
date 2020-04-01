@@ -41,6 +41,8 @@
             />
             <user-reviews
               :reviews="reviews"
+              :show-update-review-form="showUserReviewForm"
+              @retriveReviewsAfterPatchFromParent="getReviews()"
             />
           </template>
         </Thread>

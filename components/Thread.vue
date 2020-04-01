@@ -5,6 +5,7 @@
     :height="listView ? '370': '100%'"
     class="elevation-3"
   >
+    {{ dialog }}
     <v-img
       :aspect-ratio="16/9"
       src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
@@ -25,11 +26,40 @@
           >
             mdi-pencil
           </v-icon>
-          <v-icon
-            dark
+          <v-dialog
+            v-model="dialog"
+            width="290"
           >
-            mdi-delete
-          </v-icon>
+            <template v-slot:activator="{ on }">
+              <v-icon
+                dark
+                v-on="on"
+              >
+                mdi-delete
+              </v-icon>
+            </template>
+
+            <v-card>
+              <v-card-text
+                class="pa-3"
+              >
+                Are you sure you want to delete this thread '{{ title }}' ?
+              </v-card-text>
+
+              <v-divider />
+
+              <v-card-actions>
+                <v-spacer />
+                <v-btn
+                  color="primary"
+                  text
+                  @click="dialog = false"
+                >
+                  I accept
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </span>
       </v-row>
     </v-img>

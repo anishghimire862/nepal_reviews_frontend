@@ -1,11 +1,10 @@
 <template>
   <v-card
     color="#f5f5f5"
-    :max-width="listView ? '360' : ''"
+    :width="listView ? '360' : ''"
     :height="listView ? '370': '100%'"
     class="elevation-3"
   >
-    {{ dialog }}
     <v-img
       :aspect-ratio="16/9"
       src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
@@ -49,13 +48,14 @@
               <v-divider />
 
               <v-card-actions>
+                {{ threadId }}
                 <v-spacer />
                 <v-btn
                   color="primary"
                   text
-                  @click="dialog = false"
+                  @click="$emit('deleteThread', threadId), dialog = false"
                 >
-                  I accept
+                  Delete
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -99,7 +99,7 @@
 
     <v-card-title
       :class="['body-1', (listView ? 'pointer blue--text' : '')]"
-      @click="$emit('emitRedirectToThread')"
+      @click="$emit('emitRedirectToThread'), dialog = false"
     >
       {{ title }}
       <span>
@@ -159,6 +159,11 @@ export default {
     listView: {
       type: Boolean,
       default: true
+    }
+  },
+  data () {
+    return {
+      dialog: false
     }
   },
   methods: {

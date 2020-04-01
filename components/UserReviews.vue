@@ -65,11 +65,40 @@
               >
                 mdi-pencil
               </v-icon>
-              <v-icon
-                class="body-2"
+              <v-dialog
+                v-model="dialog"
+                width="290"
               >
-                mdi-delete
-              </v-icon>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    class="body-2"
+                    v-on="on"
+                  >
+                    mdi-delete
+                  </v-icon>
+                </template>
+
+                <v-card>
+                  <v-card-text
+                    class="pa-3"
+                  >
+                    Are you sure you want to delete this review ?
+                  </v-card-text>
+
+                  <v-divider />
+
+                  <v-card-actions>
+                    <v-spacer />
+                    <v-btn
+                      color="primary"
+                      text
+                      @click="$emit('deleteReview', review.id), dialog = false"
+                    >
+                      Delete
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
             </span>
           </v-card-title>
           <v-card-subtitle class="caption pa-2">
@@ -106,7 +135,8 @@ export default {
       reviewId: 0,
       reviewDescription: '',
       showUpdateReviewFormId: null,
-      showUpdateReviewForm: false
+      showUpdateReviewForm: false,
+      dialog: false
     }
   },
   methods: {

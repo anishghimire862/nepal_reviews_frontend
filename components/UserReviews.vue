@@ -30,6 +30,7 @@
             :is-update="true"
             @retriveReviewsAfterPatch="$emit('retriveReviewsAfterPatchFromParent')"
             @hideUpdateFormAfterPatch="showUpdateReviewForm = false"
+            @refreshAverageRating="$emit('refreshAverageRating')"
           />
         </div>
         <v-card

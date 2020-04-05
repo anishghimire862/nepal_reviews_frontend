@@ -45,6 +45,7 @@ export default {
       this.$axios.post(url, data)
         .then(function (response) {
           self.$emit('refreshReviews')
+          self.$emit('refreshAverageRating')
           alert('Rating Updated.')
         })
         .catch(function (error) {

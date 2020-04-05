@@ -114,7 +114,7 @@
         <span
           class="body-2 black--text"
         >
-          {{ getAverageRatings() || 'N/A' }}
+          {{ getAverageRatings() }}
         </span>
       </span>
     </v-card-title>

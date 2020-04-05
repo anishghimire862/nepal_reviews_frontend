@@ -38,6 +38,7 @@
               v-if="isLoggedIn"
               :thread-id="threadId"
               @refreshReviews="getReviews()"
+              @refreshAverageRating="getThread()"
             />
             <v-divider
               v-if="!isLoggedIn"

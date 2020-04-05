@@ -36,6 +36,8 @@
     >
       <Rating
         :thread-id="threadId"
+        @refreshReviews="$emit('refreshReviews')"
+        @refreshAverageRating="$emit('refreshAverageRating')"
       />
     </div>
   </div>

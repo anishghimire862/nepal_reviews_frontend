@@ -37,7 +37,7 @@
           class="elevation-3 mr-2"
         >
           <v-card-title class="body-2 pointer blue--text pa-2">
-            {{ review.creator }}
+            {{ review.users.name }}
             <span
               class="body-2"
             >
@@ -50,14 +50,21 @@
                 mdi-star
               </v-icon>
               <span
+                v-if="review.users.ratings[0]"
                 class="body-2 black--text"
               >
-                7.8
+                {{ review.users.ratings[0].star }}
+              </span>
+              <span
+                v-else
+                class="black--text"
+              >
+                N/A
               </span>
             </span>
             <v-spacer />
             <span
-              v-if="currentUserEmail === review.creator"
+              v-if="currentUserId === parseInt(review.userId)"
             >
               <v-icon
                 class="body-2"

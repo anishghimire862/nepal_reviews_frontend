@@ -23,7 +23,9 @@
         <Thread
           :title="thread.title"
           :description="thread.description"
-          :creator="thread.creator"
+          :creator="parseInt(thread.userId)"
+          :creator-name="thread.users.name"
+          :ratings="thread.ratings"
           :created-on="new Date(thread.createdAt)"
           :list-view="false"
           @updateThread="updateThread"
@@ -103,11 +105,12 @@ export default {
     },
     getReviews () {
       const id = parseInt(this.threadId)
-      const url = `/reviews/${id}`
+      // /ratings gives reviews and ratings
+      const url = `/ratings/${id}`
       const self = this
       this.$axios.get(url)
         .then(function (response) {
-          self.reviews = response.data
+          self.reviews = response.data[0].reviews
           self.loading = false
         })
     },

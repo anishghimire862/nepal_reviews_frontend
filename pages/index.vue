@@ -52,7 +52,9 @@
             :thread-id="thread.id"
             :title="thread.title"
             :description="thread.description"
-            :creator="thread.creator"
+            :creator="parseInt(thread.userId)"
+            :creator-name="thread.users.name"
+            :ratings="thread.ratings"
             :created-on="new Date(thread.createdAt)"
             @emitRedirectToThread="redirectToThread(thread.id)"
             @updateThread="updateThread"
@@ -60,6 +62,18 @@
           />
         </v-col>
       </v-row>
+    </div>
+    <div
+      v-if="threads.length === 0"
+    >
+      <v-alert
+        dense
+        text
+        type="info"
+        class="ml-2 mr-3 mt-5"
+      >
+        Be the first to create a thread and ask for reviews...
+      </v-alert>
     </div>
     <create-thread
       :create-thread-sheet="createThreadSheet"

@@ -1,7 +1,7 @@
 export default {
   computed: {
-    currentUserEmail () {
-      return this.isLoggedIn ? this.$auth.user.data.email : ''
+    currentUserId () {
+      return this.isLoggedIn ? this.$auth.user.data.id : ''
     },
     isLoggedIn () {
       return this.$auth.loggedIn

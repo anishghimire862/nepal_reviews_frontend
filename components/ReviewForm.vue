@@ -1,36 +1,44 @@
 <template>
-  <v-card
-    class="mb-1 pa-2"
-  >
-    <v-textarea
-      v-model="description"
-      label="Write your review here..."
-      no-resize
-      rows="2"
-    />
-    <div
-      class="text-right"
+  <div>
+    <v-card
+      class="mb-1 pa-2"
     >
-      <Rating />
-      <v-btn
-        class="ma-2"
-        outlined
-        color="indigo"
-        @click="submit"
+      <v-textarea
+        v-model="description"
+        label="Write your review here..."
+        no-resize
+        rows="2"
+      />
+      <div
+        class="text-right"
       >
-        <span
-          v-if="isUpdate"
+        <v-btn
+          class="ma-2"
+          outlined
+          color="indigo"
+          @click="submit"
         >
-          Update Review
-        </span>
-        <span
-          v-else
-        >
-          Submit Review
-        </span>
-      </v-btn>
+          <span
+            v-if="isUpdate"
+          >
+            Update Review
+          </span>
+          <span
+            v-else
+          >
+            Submit Review
+          </span>
+        </v-btn>
+      </div>
+    </v-card>
+    <div
+      v-if="!isUpdate"
+    >
+      <Rating
+        :thread-id="threadId"
+      />
     </div>
-  </v-card>
+  </div>
 </template>
 <script>
 import Rating from '~/components/Rating'

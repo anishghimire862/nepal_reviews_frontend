@@ -16,7 +16,7 @@
         class="lightbox white--text pa-5"
       >
         <span
-          v-if="currentUserEmail === creator"
+          v-if="currentUserId === creator"
           class="white--text"
         >
           <v-icon
@@ -77,7 +77,7 @@
           <v-list-item-title
             class="blue--text pointer"
           >
-            {{ creator }}
+            {{ creatorName }}
           </v-list-item-title>
           <v-list-item-subtitle>
             {{ getHumanDate(createdOn) }}
@@ -114,7 +114,7 @@
         <span
           class="body-2 black--text"
         >
-          7.8
+          {{ getAverageRatings() || 'N/A' }}
         </span>
       </span>
     </v-card-title>
@@ -149,8 +149,8 @@ export default {
       default: ''
     },
     creator: {
-      type: String,
-      default: ''
+      type: Number,
+      default: 0
     },
     createdOn: {
       type: Date,
@@ -159,6 +159,14 @@ export default {
     listView: {
       type: Boolean,
       default: true
+    },
+    creatorName: {
+      type: String,
+      default: ''
+    },
+    ratings: {
+      type: Array,
+      default: () => []
     }
   },
   data () {
@@ -170,6 +178,13 @@ export default {
     getHumanDate (date) {
       const formattedDate = moment(date).format('YYYY-MM-DD HH:mm:ss')
       return moment(formattedDate).fromNow()
+    },
+    getAverageRatings () {
+      let sum = 0
+      for (let i = 0; i < this.ratings.length; i++) {
+        sum += this.ratings[i].star
+      }
+      return sum / this.ratings.length
     }
   }
 }

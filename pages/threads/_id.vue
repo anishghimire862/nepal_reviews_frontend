@@ -27,6 +27,7 @@
           :creator-name="thread.users.name"
           :ratings="thread.ratings"
           :created-on="new Date(thread.createdAt)"
+          :thread-images="thread.thread_images"
           :list-view="false"
           @updateThread="updateThread"
           @deleteThread="deleteThread"

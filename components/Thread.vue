@@ -7,7 +7,7 @@
   >
     <v-img
       :aspect-ratio="16/9"
-      src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+      :src="'http://localhost:8080/' +getRandomThreadImage"
       height="200px"
     >
       <v-row
@@ -167,11 +167,26 @@ export default {
     ratings: {
       type: Array,
       default: () => []
+    },
+    threadImages: {
+      type: Array,
+      default: () => []
     }
   },
   data () {
     return {
       dialog: false
+    }
+  },
+  computed: {
+    getRandomThreadImage () {
+      if (this.threadImages.length === 0) {
+        return '/no_preview.jpg'
+      } else if (this.threadImages.length === 1) {
+        return this.threadImages[0].image
+      } else {
+        return this.threadImages[Math.floor(Math.random() * this.threadImages.length)].image
+      }
     }
   },
   methods: {

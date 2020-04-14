@@ -1,9 +1,11 @@
 <template>
-  <v-card class="text-center">
-    <v-bottom-sheet
-      v-model="createThreadSheet"
-      persistent
-    >
+  <v-dialog
+    v-model="createThreadSheet"
+    fullscreen
+    hide-overlay
+    transition="dialog-bottom-transition"
+  >
+    <v-card>
       <v-toolbar
         color="primary"
         dense
@@ -22,7 +24,7 @@
           close
         </v-btn>
       </v-toolbar>
-      <v-sheet height="300px">
+      <v-sheet>
         <div
           class="d-flex justify-center"
         >
@@ -46,6 +48,11 @@
               label="Please select appropriate category of the thread..."
               dense
             />
+            <FileUpload
+              :url-link="url"
+              :clear-images="clearImages"
+              @preview="openPreview"
+            />
             <div
               class="text-right"
             >
@@ -63,11 +70,15 @@
           </v-form>
         </div>
       </v-sheet>
-    </v-bottom-sheet>
-  </v-card>
+    </v-card>
+  </v-dialog>
 </template>
 <script>
+import FileUpload from '~/components/FileUpload.vue'
 export default {
+  components: {
+    FileUpload
+  },
   props: {
     createThreadSheet: {
       type: Boolean,
@@ -91,7 +102,11 @@ export default {
       threadCategory: ['Movie', 'Book', 'Place', 'Others'],
       title: '',
       description: '',
-      category: null
+      category: null,
+      url: '',
+      file: '',
+      images: [],
+      clearImages: false
     }
   },
   watch: {
@@ -125,8 +140,19 @@ export default {
       }
 
       if (this.threadId === null) {
-        this.$axios.post(url, data)
+        const formData = new FormData()
+        formData.append('title', data.title)
+        formData.append('description', data.description)
+        formData.append('category', data.category)
+        for (let i = 0; i < this.images.length; i++) {
+          formData.append('image', this.images[i])
+        }
+        this.$axios.post(url, formData)
           .then(function (response) {
+            self.title = ''
+            self.description = ''
+            self.category = null
+            self.clearImages = true
             self.$emit('emitClose')
             self.$emit('refreshThread')
             alert('Thread created.')
@@ -160,6 +186,13 @@ export default {
           self.description = response.data.description
           self.category = response.data.category
         })
+    },
+    openPreview (files) {
+      for (let i = 0; i < files.length; i++) {
+        this.images.push(files[i])
+      }
+      // // this.url = URL.createObjectURL(files[0])
+      // console.log(this.url)
     }
   }
 }

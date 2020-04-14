@@ -56,6 +56,7 @@
             :creator-name="thread.users.name"
             :ratings="thread.ratings"
             :created-on="new Date(thread.createdAt)"
+            :thread-images="thread.thread_images"
             @emitRedirectToThread="redirectToThread(thread.id)"
             @updateThread="updateThread"
             @deleteThread="deleteThread"

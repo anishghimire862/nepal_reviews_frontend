@@ -1,5 +1,11 @@
 <template>
   <div class="py-3">
+    <span
+      v-if="files.length > 0"
+      class="caption"
+    >
+      Images to be uploaded...
+    </span>
     <v-row
       no-gutters
     >
@@ -57,14 +63,6 @@
 <script>
 export default {
   props: {
-    urlLink: {
-      type: String,
-      required: true
-    },
-    imageName: {
-      type: String,
-      default: ''
-    },
     clearImages: {
       type: Boolean,
       default: false
@@ -72,7 +70,6 @@ export default {
   },
   data () {
     return {
-      fileName: '',
       files: [],
       filesUrl: []
     }

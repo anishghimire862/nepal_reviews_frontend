@@ -9,6 +9,10 @@
         no-resize
         rows="2"
       />
+      <file-upload
+        :clear-images="clearImages"
+        @preview="openPreview"
+      />
       <div
         class="text-right"
       >
@@ -43,9 +47,11 @@
   </div>
 </template>
 <script>
+import FileUpload from '~/components/FileUpload'
 import Rating from '~/components/Rating'
 export default {
   components: {
+    FileUpload,
     Rating
   },
   props: {
@@ -68,7 +74,9 @@ export default {
   },
   data () {
     return {
-      description: this.reviewDescription ? this.reviewDescription : ''
+      description: this.reviewDescription ? this.reviewDescription : '',
+      reviewImages: [],
+      clearImages: false
     }
   },
   methods: {
@@ -82,9 +90,21 @@ export default {
         threadId
       }
 
+      const formData = new FormData()
+
+      for (const [key, value] of Object.entries(data)) {
+        formData.append(key, value)
+      }
+
+      if (this.reviewImages.length > 0) {
+        for (let i = 0; i < this.reviewImages.length; i++) {
+          formData.append('image', this.reviewImages[i])
+        }
+      }
+
       if (this.isUpdate) {
         const patchUrl = `/reviews/${this.reviewId}`
-        this.$axios.patch(patchUrl, data)
+        this.$axios.patch(patchUrl, formData)
           .then(function (response) {
             self.$emit('retriveReviewsAfterPatch')
             self.$emit('hideUpdateFormAfterPatch')
@@ -94,15 +114,21 @@ export default {
             alert(error)
           })
       } else {
-        this.$axios.post(url, data)
+        this.$axios.post(url, formData)
           .then(function (response) {
             self.description = ''
+            self.clearImages = true
             self.$emit('refreshReviews')
             alert('Review created.')
           })
           .catch(function (error) {
             alert(error)
           })
+      }
+    },
+    openPreview (files) {
+      for (let i = 0; i < files.length; i++) {
+        this.reviewImages.push(files[i])
       }
     }
   }

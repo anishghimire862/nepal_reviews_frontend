@@ -111,6 +111,38 @@
           </v-card-title>
           <v-card-subtitle class="caption pa-2">
             {{ review.description }}
+            <v-row
+              v-if="review.review_images.length > 0"
+            >
+              <v-col
+                v-for="(image, key) in review.review_images"
+                :key="key"
+                xs="12"
+                sm="6"
+                md="2"
+                cols="12"
+              >
+                <v-img
+                  :src="'http://localhost:8080/' +image.image"
+                  aspect-ratio="1"
+                />
+                <span
+                  class="caption"
+                >
+                  {{ image.image | truncate(15) }}
+                </span>
+                <span
+                  v-if="currentUserId === image.userId"
+                  @click="deleteImage(image.id, key)"
+                >
+                  <v-icon
+                    class="caption pointer"
+                  >
+                    mdi-delete
+                  </v-icon>
+                </span>
+              </v-col>
+            </v-row>
           </v-card-subtitle>
         </v-card>
       </v-timeline-item>
@@ -150,6 +182,18 @@ export default {
   methods: {
     updateReview (reviewId) {
       this.showUpdateReviewForm = true
+    },
+    deleteImage (imageId, key) {
+      const url = `/review-image/${imageId}`
+      const self = this
+      this.$axios.delete(url)
+        .then(function (response) {
+          self.$emit('refreshReviewsAfterImageDelete')
+          alert('Review Image Deleted')
+        })
+        .catch(function (error) {
+          alert(error)
+        })
     }
   }
 }

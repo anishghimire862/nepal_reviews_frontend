@@ -79,7 +79,6 @@ export default {
       if (val === true) {
         this.files = []
         this.filesUrl = []
-        this.clearImages = false
       }
     }
   },

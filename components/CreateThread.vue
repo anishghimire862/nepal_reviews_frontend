@@ -176,6 +176,9 @@ export default {
         this.description = ''
         this.category = ''
       }
+      if (val === true) {
+        this.clearImages = false
+      }
     }
   },
   methods: {

@@ -48,6 +48,44 @@
               label="Please select appropriate category of the thread..."
               dense
             />
+            <span
+              v-if="threadId !== null && threadImages.length > 0"
+              class="caption"
+            >
+              Existing images...
+            </span>
+            <v-row
+              v-if="threadId !== null"
+            >
+              <v-col
+                v-for="(image, key) in threadImages"
+                :key="key"
+                xs="12"
+                sm="6"
+                md="2"
+                cols="12"
+              >
+                <v-img
+                  :src="'http://localhost:8080/' +image.image"
+                  aspect-ratio="1"
+                />
+                <span
+                  class="caption"
+                >
+                  {{ image.image | truncate(15) }}
+                </span>
+                <span
+                  v-if="currentUserId === image.userId"
+                  @click="deleteImage(image.id, key)"
+                >
+                  <v-icon
+                    class="caption pointer"
+                  >
+                    mdi-delete
+                  </v-icon>
+                </span>
+              </v-col>
+            </v-row>
             <FileUpload
               :url-link="url"
               :clear-images="clearImages"
@@ -75,10 +113,13 @@
 </template>
 <script>
 import FileUpload from '~/components/FileUpload.vue'
+import userMixin from '~/mixins/userMixin'
+
 export default {
   components: {
     FileUpload
   },
+  mixins: [userMixin],
   props: {
     createThreadSheet: {
       type: Boolean,
@@ -106,7 +147,8 @@ export default {
       url: '',
       file: '',
       images: [],
-      clearImages: false
+      clearImages: false,
+      threadImages: []
     }
   },
   watch: {
@@ -126,6 +168,14 @@ export default {
         this.description = ''
         this.category = null
       }
+    },
+    createThreadSheet (val) {
+      if (val === false) {
+        this.clearImages = true
+        this.title = ''
+        this.description = ''
+        this.category = ''
+      }
     }
   },
   methods: {
@@ -139,14 +189,19 @@ export default {
         category: this.category
       }
 
-      if (this.threadId === null) {
-        const formData = new FormData()
-        formData.append('title', data.title)
-        formData.append('description', data.description)
-        formData.append('category', data.category)
+      const formData = new FormData()
+
+      for (const [key, value] of Object.entries(data)) {
+        formData.append(key, value)
+      }
+
+      if (this.images.length > 0) {
         for (let i = 0; i < this.images.length; i++) {
           formData.append('image', this.images[i])
         }
+      }
+
+      if (this.threadId === null) {
         this.$axios.post(url, formData)
           .then(function (response) {
             self.title = ''
@@ -162,7 +217,7 @@ export default {
           })
       } else {
         const patchUrl = `/threads/${this.threadId}`
-        this.$axios.patch(patchUrl, data)
+        this.$axios.patch(patchUrl, formData)
           .then(function (response) {
             self.title = ''
             self.description = ''
@@ -185,14 +240,26 @@ export default {
           self.title = response.data.title
           self.description = response.data.description
           self.category = response.data.category
+          self.threadImages = response.data.thread_images
         })
     },
     openPreview (files) {
       for (let i = 0; i < files.length; i++) {
         this.images.push(files[i])
       }
-      // // this.url = URL.createObjectURL(files[0])
-      // console.log(this.url)
+    },
+    deleteImage (imageId, key) {
+      const url = `/thread-image/${imageId}`
+      const self = this
+      this.$axios.delete(url)
+        .then(function (response) {
+          self.threadImages.splice(key, 1)
+          alert('Thread Image Deleted')
+          self.$emit('emitRefreshThreadAfterImageDeletion')
+        })
+        .catch(function (error) {
+          alert(error)
+        })
     }
   }
 }

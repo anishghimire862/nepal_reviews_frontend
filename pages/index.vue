@@ -82,6 +82,7 @@
       :thread-id="threadId"
       @emitClose="closeBottomSheet()"
       @refreshThread="getThreads()"
+      @emitRefreshThreadAfterImageDeletion="getThreads()"
     />
   </div>
 </template>

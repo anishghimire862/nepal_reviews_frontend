@@ -48,6 +48,7 @@
               :reviews="reviews"
               @retriveReviewsAfterPatchFromParent="getReviews()"
               @deleteReview="deleteReview"
+              @refreshReviewsAfterImageDelete="getReviews()"
             />
           </template>
         </Thread>
@@ -60,6 +61,7 @@
       :update-thread="updateThreadInFullPage"
       @emitClose="closeBottomSheet()"
       @refreshThread="getThread()"
+      @emitRefreshThreadAfterImageDeletion="getThread()"
     />
   </div>
 </template>

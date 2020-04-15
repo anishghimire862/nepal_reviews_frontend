@@ -1,9 +1,8 @@
 <template>
   <v-card
     color="#f5f5f5"
-    :width="listView ? '360' : ''"
-    :height="listView ? '370': '100%'"
     class="elevation-3"
+    :height="listView ? 370 : ''"
   >
     <v-img
       :aspect-ratio="16/9"
@@ -122,7 +121,16 @@
     <v-card-subtitle
       class="caption"
     >
-      {{ description }}
+      <span
+        v-if="listView"
+      >
+        {{ description | truncate(96) }}
+      </span>
+      <span
+        v-else
+      >
+        {{ description }}
+      </span>
     </v-card-subtitle>
     <slot
       name="threadReviews"

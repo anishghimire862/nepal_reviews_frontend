@@ -2,7 +2,7 @@
   <div class="text-center">
     <v-rating
       v-model="rating"
-      @input="submitRating"
+      @input="$emit('userRating', rating)"
     />
   </div>
 </template>
@@ -13,8 +13,8 @@ export default {
   mixins: [userMixin],
   props: {
     threadId: {
-      type: Number,
-      default: 0
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -32,24 +32,7 @@ export default {
       const self = this
       this.$axios.get(url)
         .then(function (response) {
-          self.rating = response.data.star
-        })
-    },
-    submitRating (val) {
-      const url = '/ratings'
-      const data = {
-        star: val,
-        threadId: this.threadId
-      }
-      const self = this
-      this.$axios.post(url, data)
-        .then(function (response) {
-          self.$emit('refreshReviews')
-          self.$emit('refreshAverageRating')
-          alert('Rating Updated.')
-        })
-        .catch(function (error) {
-          alert(error)
+          self.rating = response.data.rating.rating
         })
     }
   }

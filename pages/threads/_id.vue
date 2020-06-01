@@ -20,14 +20,16 @@
         sm="12"
         md="12"
       >
+        <!--
+          :created-on="new Date(thread.createdAt)"
+        -->
         <Thread
           :title="thread.title"
           :description="thread.description"
-          :creator="parseInt(thread.userId)"
-          :creator-name="thread.users.name"
-          :ratings="thread.ratings"
-          :created-on="new Date(thread.createdAt)"
-          :thread-images="thread.thread_images"
+          :creator="thread.user._id"
+          :creator-name="thread.user.username"
+          :thread-images="thread.images"
+          :ratings="formRatingArray(thread.reviews)"
           :list-view="false"
           @updateThread="updateThread"
           @deleteThread="deleteThread"
@@ -36,9 +38,10 @@
             v-slot:threadReviews
           >
             <review-form
-              v-if="isLoggedIn"
+              v-if="isLoggedIn && !hasReviewed"
               :thread-id="threadId"
-              @refreshReviews="getReviews()"
+              @retriveReviewsAfterPatch="getThread()"
+              @refreshReviews="getThread()"
               @refreshAverageRating="getThread()"
             />
             <v-divider
@@ -46,7 +49,7 @@
             />
             <user-reviews
               :reviews="reviews"
-              @retriveReviewsAfterPatchFromParent="getReviews()"
+              @retriveReviewsAfterPatchFromParent="getThread()"
               @deleteReview="deleteReview"
               @refreshReviewsAfterImageDelete="getReviews()"
             />
@@ -84,39 +87,56 @@ export default {
   mixins: [userMixin],
   data () {
     return {
-      threadId: null,
+      threadId: '',
       thread: {},
-      createThreadSheet: false,
       reviews: [],
+      createThreadSheet: false,
       loading: true,
-      updateThreadInFullPage: false
+      updateThreadInFullPage: false,
+      hasReviewed: false
     }
   },
   mounted () {
-    this.threadId = parseInt(this.$route.params.id)
+    this.threadId = this.$route.params.id
     this.getThread()
   },
   methods: {
+    formRatingArray (reviews) {
+      const arr = []
+      for (let i = 0; i < reviews.length; i++) {
+        if (reviews[i].review) {
+          if (reviews[i].review.rating) {
+            arr.push(reviews[i].review.rating)
+          }
+        }
+      }
+      return arr
+    },
     getThread () {
-      const id = parseInt(this.threadId)
+      const id = this.threadId
       const url = `/threads/${id}`
       const self = this
       this.$axios.get(url)
         .then(function (response) {
-          self.thread = response.data
+          self.thread = response.data[0]
           self.getReviews()
+          self.loading = false
         })
     },
     getReviews () {
-      const id = parseInt(this.threadId)
-      // /ratings gives reviews and ratings
-      const url = `/ratings/${id}`
+      const id = this.threadId
+      const url = `/reviews/${id}`
       const self = this
       this.$axios.get(url)
         .then(function (response) {
-          self.reviews = response.data[0].reviews
+          self.reviews = response.data
+          self.hasCurrentUserReviewed()
           self.loading = false
         })
+    },
+    hasCurrentUserReviewed () {
+      this.hasReviewed = this.reviews.some(review => review.user_id === this.currentUserId)
+      return this.hasReviewed
     },
     updateThread (threadId) {
       this.updateThreadInFullPage = true

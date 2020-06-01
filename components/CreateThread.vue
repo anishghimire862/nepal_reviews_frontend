@@ -49,13 +49,13 @@
               dense
             />
             <span
-              v-if="threadId !== null && threadImages.length > 0"
+              v-if="threadId !== '' && threadImages.length > 0"
               class="caption"
             >
               Existing images...
             </span>
             <v-row
-              v-if="threadId !== null"
+              v-if="threadId !== ''"
             >
               <v-col
                 v-for="(image, key) in threadImages"
@@ -66,13 +66,13 @@
                 cols="12"
               >
                 <v-img
-                  :src="'http://localhost:8080/' +image.image"
+                  :src="'http://localhost:8082/' +image"
                   aspect-ratio="1"
                 />
                 <span
                   class="caption"
                 >
-                  {{ image.image | truncate(15) }}
+                  {{ image | truncate(15) }}
                 </span>
                 <span
                   v-if="currentUserId === image.userId"
@@ -101,7 +101,7 @@
                 @click="submitThread"
               >
                 <span>
-                  {{ threadId === null ? 'Create Thread' : 'Update Thread' }}
+                  {{ threadId === '' ? 'Create Thread' : 'Update Thread' }}
                 </span>
               </v-btn>
             </div>
@@ -134,8 +134,8 @@ export default {
       default: false
     },
     threadId: {
-      type: Number,
-      default: null
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -153,7 +153,7 @@ export default {
   },
   watch: {
     threadId (val) {
-      if (val !== null) {
+      if (val !== '') {
         this.getThread()
       }
     },
@@ -204,7 +204,7 @@ export default {
         }
       }
 
-      if (this.threadId === null) {
+      if (this.threadId === '') {
         this.$axios.post(url, formData)
           .then(function (response) {
             self.title = ''
@@ -235,15 +235,16 @@ export default {
       }
     },
     getThread () {
-      const id = parseInt(this.threadId)
+      const id = this.threadId
       const url = `/threads/${id}`
       const self = this
       this.$axios.get(url)
         .then(function (response) {
-          self.title = response.data.title
-          self.description = response.data.description
-          self.category = response.data.category
-          self.threadImages = response.data.thread_images
+          const threadData = response.data[0]
+          self.title = threadData.title
+          self.description = threadData.description
+          self.category = threadData.category
+          self.threadImages = threadData.images
         })
     },
     openPreview (files) {

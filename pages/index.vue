@@ -42,22 +42,24 @@
       <v-row dense>
         <v-col
           v-for="thread in threads"
-          :key="thread.id"
+          :key="thread._id"
           xs="12"
           sm="6"
           md="4"
           class="pa-3"
         >
+          <!--
+            :created-on="new Date(thread.createdAt)"
+          -->
           <Thread
-            :thread-id="thread.id"
+            :thread-id="thread._id"
             :title="thread.title"
             :description="thread.description"
-            :creator="parseInt(thread.userId)"
-            :creator-name="thread.users.name"
-            :ratings="thread.ratings"
-            :created-on="new Date(thread.createdAt)"
-            :thread-images="thread.thread_images"
-            @emitRedirectToThread="redirectToThread(thread.id)"
+            :creator="thread.user._id"
+            :creator-name="thread.user.username"
+            :thread-images="thread.images"
+            :ratings="formRatingArray(thread.reviews)"
+            @emitRedirectToThread="redirectToThread(thread._id)"
             @updateThread="updateThread"
             @deleteThread="deleteThread"
           />
@@ -78,7 +80,7 @@
     </div>
     <create-thread
       :create-thread-sheet="createThreadSheet"
-      :form-title="threadId === null ? 'Create a Thread' : 'Update Thread'"
+      :form-title="threadId === '' ? 'Create a Thread' : 'Update Thread'"
       :thread-id="threadId"
       @emitClose="closeBottomSheet()"
       @refreshThread="getThreads()"
@@ -104,13 +106,24 @@ export default {
       threads: [],
       createThreadSheet: false,
       loading: true,
-      threadId: null
+      threadId: ''
     }
   },
   created () {
     this.getThreads()
   },
   methods: {
+    formRatingArray (reviews) {
+      const arr = []
+      for (let i = 0; i < reviews.length; i++) {
+        if (reviews[i].review) {
+          if (reviews[i].review.rating) {
+            arr.push(reviews[i].review.rating)
+          }
+        }
+      }
+      return arr
+    },
     redirectToThread (threadId) {
       const id = threadId
       this.$router.push(`/threads/${id}`)
@@ -130,7 +143,7 @@ export default {
     },
     closeBottomSheet () {
       this.createThreadSheet = !this.createThreadSheet
-      this.threadId = null
+      this.threadId = ''
     },
     deleteThread (threadId) {
       const url = `/threads/${threadId}`

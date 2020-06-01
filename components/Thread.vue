@@ -6,7 +6,7 @@
   >
     <v-img
       :aspect-ratio="16/9"
-      :src="'http://localhost:8080/' +getRandomThreadImage"
+      :src="'http://localhost:8082/' +getRandomThreadImage"
       height="200px"
     >
       <v-row
@@ -47,7 +47,6 @@
               <v-divider />
 
               <v-card-actions>
-                {{ threadId }}
                 <v-spacer />
                 <v-btn
                   color="primary"
@@ -78,9 +77,9 @@
           >
             {{ creatorName }}
           </v-list-item-title>
-          <v-list-item-subtitle>
+          <!-- <v-list-item-subtitle>
             {{ getHumanDate(createdOn) }}
-          </v-list-item-subtitle>
+          </v-list-item-subtitle> -->
         </v-list-item-content>
 
         <v-row
@@ -113,8 +112,7 @@
         <span
           class="body-2 black--text"
         >
-          {{ getAverageRatings() }}
-        </span>
+          {{ getAverageRatings() }}  </span>
       </span>
     </v-card-title>
 
@@ -145,8 +143,8 @@ export default {
   mixins: [userMixin],
   props: {
     threadId: {
-      type: Number,
-      default: null
+      type: String,
+      default: ''
     },
     title: {
       type: String,
@@ -157,13 +155,13 @@ export default {
       default: ''
     },
     creator: {
-      type: Number,
-      default: 0
+      type: String,
+      default: ''
     },
-    createdOn: {
-      type: Date,
-      default: Date.now()
-    },
+    // createdOn: {
+    //   type: Date,
+    //   default: Date.now()
+    // },
     listView: {
       type: Boolean,
       default: true
@@ -189,11 +187,11 @@ export default {
   computed: {
     getRandomThreadImage () {
       if (this.threadImages.length === 0) {
-        return '/no_preview.jpg'
+        return '/image-1589892121827.png'
       } else if (this.threadImages.length === 1) {
-        return this.threadImages[0].image
+        return this.threadImages[0]
       } else {
-        return this.threadImages[Math.floor(Math.random() * this.threadImages.length)].image
+        return this.threadImages[1]
       }
     }
   },
@@ -205,9 +203,9 @@ export default {
     getAverageRatings () {
       let sum = 0
       for (let i = 0; i < this.ratings.length; i++) {
-        sum += this.ratings[i].star
+        sum += this.ratings
       }
-      return sum / this.ratings.length
+      return sum > 0 ? sum / this.ratings.length : 'N/A'
     }
   }
 }

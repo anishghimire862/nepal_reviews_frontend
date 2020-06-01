@@ -1,13 +1,13 @@
 <template>
   <div>
     <p
-      v-if="reviews.length"
+      v-if="reviews.length>0"
       class="pa-4 body-2"
     >
       User Reviews
     </p>
     <v-timeline
-      v-if="reviews.length"
+      v-if="reviews.length>0"
       dense
       class="mb-3"
     >
@@ -24,8 +24,8 @@
           v-if="showUpdateReviewForm && showUpdateReviewFormId === index"
         >
           <ReviewForm
-            :thread-id="review.threadId"
-            :review-id="reviewId"
+            :thread-id="review.thread_id"
+            :review-id="review._id"
             :review-description="reviewDescription"
             :is-update="true"
             @retriveReviewsAfterPatch="$emit('retriveReviewsAfterPatchFromParent')"
@@ -38,7 +38,7 @@
           class="elevation-3 mr-2"
         >
           <v-card-title class="body-2 pointer blue--text pa-2">
-            {{ review.users.name }}
+            {{ review.user[0].username }}
             <span
               class="body-2"
             >
@@ -51,10 +51,10 @@
                 mdi-star
               </v-icon>
               <span
-                v-if="review.users.ratings[0]"
+                v-if="review.rating"
                 class="body-2 black--text"
               >
-                {{ review.users.ratings[0].star }}
+                {{ review.rating }}
               </span>
               <span
                 v-else
@@ -65,11 +65,11 @@
             </span>
             <v-spacer />
             <span
-              v-if="currentUserId === parseInt(review.userId)"
+              v-if="currentUserId === review.user[0]._id"
             >
               <v-icon
                 class="body-2"
-                @click="updateReview(review.id), showUpdateReviewFormId = index, reviewId = review.id, reviewDescription = review.description, $emit('getUpdateDetails')"
+                @click="updateReview(review._id), showUpdateReviewFormId = index, reviewId = review._id, reviewDescription = review.description, $emit('getUpdateDetails')"
               >
                 mdi-pencil
               </v-icon>
@@ -100,7 +100,7 @@
                     <v-btn
                       color="primary"
                       text
-                      @click="$emit('deleteReview', review.id), dialog = false"
+                      @click="$emit('deleteReview', review._id), dialog = false"
                     >
                       Delete
                     </v-btn>
@@ -112,10 +112,10 @@
           <v-card-subtitle class="caption pa-2">
             {{ review.description }}
             <v-row
-              v-if="review.review_images.length > 0"
+              v-if="review.images !== null"
             >
               <v-col
-                v-for="(image, key) in review.review_images"
+                v-for="(image, key) in review.images"
                 :key="key"
                 xs="12"
                 sm="6"
@@ -123,15 +123,15 @@
                 cols="12"
               >
                 <v-img
-                  :src="'http://localhost:8080/' +image.image"
+                  :src="'http://localhost:8082/' +image"
                   aspect-ratio="1"
                 />
-                <span
+                <!-- <span
                   class="caption"
                 >
-                  {{ image.image | truncate(15) }}
-                </span>
-                <span
+                  {{ image | truncate(15) }}
+                </span> -->
+                <!-- <span
                   v-if="currentUserId === image.userId"
                   @click="deleteImage(image.id, key)"
                 >
@@ -140,7 +140,7 @@
                   >
                     mdi-delete
                   </v-icon>
-                </span>
+                </span> -->
               </v-col>
             </v-row>
           </v-card-subtitle>
@@ -172,7 +172,7 @@ export default {
   },
   data () {
     return {
-      reviewId: 0,
+      reviewId: '',
       reviewDescription: '',
       showUpdateReviewFormId: null,
       showUpdateReviewForm: false,

@@ -9,10 +9,27 @@
         no-resize
         rows="2"
       />
-      <file-upload
-        :clear-images="clearImages"
-        @preview="openPreview"
-      />
+      <div>
+        <Rating
+          v-if="isUpdate"
+          :thread-id="threadId"
+          @userRating="userRating"
+        />
+      </div>
+      <div>
+        <file-upload
+          :clear-images="clearImages"
+          @preview="openPreview"
+        />
+      </div>
+      <div
+        v-if="!isUpdate"
+      >
+        <Rating
+          :thread-id="threadId"
+          @userRating="userRating"
+        />
+      </div>
       <div
         class="text-right"
       >
@@ -35,15 +52,6 @@
         </v-btn>
       </div>
     </v-card>
-    <div
-      v-if="!isUpdate"
-    >
-      <Rating
-        :thread-id="threadId"
-        @refreshReviews="$emit('refreshReviews')"
-        @refreshAverageRating="$emit('refreshAverageRating')"
-      />
-    </div>
   </div>
 </template>
 <script>
@@ -56,16 +64,16 @@ export default {
   },
   props: {
     threadId: {
-      type: Number,
-      default: null
+      type: String,
+      default: ''
     },
     isUpdate: {
       type: Boolean,
       default: false
     },
     reviewId: {
-      type: Number,
-      default: 0
+      type: String,
+      default: ''
     },
     reviewDescription: {
       type: String,
@@ -76,10 +84,14 @@ export default {
     return {
       description: this.reviewDescription ? this.reviewDescription : '',
       reviewImages: [],
-      clearImages: false
+      clearImages: false,
+      rating: null
     }
   },
   methods: {
+    userRating (value) {
+      this.rating = value
+    },
     submit () {
       const threadId = this.threadId
       const url = '/reviews'
@@ -87,7 +99,8 @@ export default {
 
       const data = {
         description: this.description,
-        threadId
+        threadId,
+        rating: this.rating
       }
 
       const formData = new FormData()

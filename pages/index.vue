@@ -100,6 +100,7 @@ export default {
     Thread,
     CreateThread
   },
+
   mixins: [userMixin],
   data () {
     return {
@@ -109,9 +110,11 @@ export default {
       threadId: ''
     }
   },
+
   created () {
     this.getThreads()
   },
+
   methods: {
     formRatingArray (reviews) {
       const arr = []
@@ -124,10 +127,12 @@ export default {
       }
       return arr
     },
+
     redirectToThread (threadId) {
       const id = threadId
       this.$router.push(`/threads/${id}`)
     },
+
     getThreads () {
       const url = '/threads'
       const self = this
@@ -137,14 +142,17 @@ export default {
           self.loading = false
         })
     },
+
     updateThread (threadId) {
       this.threadId = threadId
       this.createThreadSheet = true
     },
+
     closeBottomSheet () {
       this.createThreadSheet = !this.createThreadSheet
       this.threadId = ''
     },
+
     deleteThread (threadId) {
       const url = `/threads/${threadId}`
       const self = this

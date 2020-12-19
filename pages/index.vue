@@ -115,10 +115,12 @@ export default {
   methods: {
     formRatingArray (reviews) {
       const arr = []
-      for (let i = 0; i < reviews.length; i++) {
-        if (reviews[i].review) {
-          if (reviews[i].review.rating) {
-            arr.push(reviews[i].review.rating)
+      if (reviews) {
+        for (let i = 0; i < reviews.length; i++) {
+          if (reviews[i].review) {
+            if (reviews[i].review.rating) {
+              arr.push(reviews[i].review.rating)
+            }
           }
         }
       }

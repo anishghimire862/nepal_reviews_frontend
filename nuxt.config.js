@@ -17,6 +17,9 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
+  env: {
+    baseUrl: 'http://localhost:8082/'
+  },
   /*
   ** Customize the progress-bar color
   */
@@ -55,7 +58,7 @@ export default {
     strategies: {
       local: {
         endpoints: {
-          login: { url: '/api/auth/login', method: 'post', propertyName: 'token' },
+          login: { url: '/login', method: 'post', propertyName: 'token' },
           logout: false,
           user: { url: '/api/auth/user', method: 'get', propertyName: false }
         }
@@ -76,7 +79,8 @@ export default {
   */
   axios: {
     host: 'localhost',
-    port: 8082
+    port: 8082,
+    prefix: '/api/v1'
   },
   /*
   ** vuetify module configuration
